@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:todoey_flutter/widgets/tasks_list.dart';
 import 'add_task_screen.dart';
+import 'package:todoey_flutter/models/task.dart';
 
-class TaskScreen extends StatelessWidget {
+class TaskScreen extends StatefulWidget {
+  const TaskScreen({Key? key}) : super(key: key);
+
+  @override
+  _TaskScreenState createState() => _TaskScreenState();
+}
+
+class _TaskScreenState extends State<TaskScreen> {
   late Widget buildButtomSheet;
-
+  List<Task> tasks = [
+    Task(name: 'some task1'),
+    Task(name: 'some task2'),
+    Task(name: 'some task3'),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +25,14 @@ class TaskScreen extends StatelessWidget {
         onPressed: () {
           showModalBottomSheet(
             context: context,
-            builder: (BuildContext context) => AddTaskScreen(),
+            builder: (BuildContext context) => AddTaskScreen(
+              (newTaskTitle) {
+                setState(() {
+                  tasks.add(Task(name: newTaskTitle));
+                });
+                Navigator.pop(context);
+              },
+            ),
           );
         },
         backgroundColor: Colors.lightBlueAccent,
@@ -49,7 +68,7 @@ class TaskScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '12 Tasks',
+                  '${tasks.length < 2 ? 'Task' : 'Tasks'}',
                   style: TextStyle(
                     fontSize: 18.0,
                     color: Colors.white,
@@ -68,7 +87,7 @@ class TaskScreen extends StatelessWidget {
                   topLeft: Radius.circular(20.0),
                 ),
               ),
-              child: TasksList(),
+              child: TasksList(tasks),
             ),
           )
         ],
@@ -76,3 +95,11 @@ class TaskScreen extends StatelessWidget {
     );
   }
 }
+
+// class TaskScreen extends StatelessWidget {
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+// }
