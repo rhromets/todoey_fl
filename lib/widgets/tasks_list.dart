@@ -9,6 +9,7 @@ class TasksList extends StatelessWidget {
     return Consumer<TaskData>(
       builder: (context, taskData, child) {
         return ListView.builder(
+          physics: BouncingScrollPhysics(),
           itemBuilder: (context, index) {
             final task = taskData.tasks[index];
             return TaskTile(

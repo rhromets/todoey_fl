@@ -19,7 +19,7 @@ class AddTaskScreen extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).accentColor,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
@@ -35,7 +35,7 @@ class AddTaskScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 30.0,
-                  color: Colors.lightBlueAccent,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               TextField(
@@ -52,9 +52,9 @@ class AddTaskScreen extends StatelessWidget {
               TextButton(
                 child: Text('Add'),
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.lightBlueAccent,
+                  backgroundColor: Theme.of(context).primaryColor,
                   padding: const EdgeInsets.all(16.0),
-                  primary: Colors.white,
+                  primary: Theme.of(context).accentColor,
                   textStyle: TextStyle(fontSize: 20),
                 ),
                 onPressed: () {
