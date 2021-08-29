@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:todoey_flutter/models/task_data.dart';
+import 'package:todoey_flutter/screens/drawer_navigation_screen.dart';
 import 'package:todoey_flutter/widgets/tasks_list.dart';
 import 'add_task_screen.dart';
 import 'package:provider/provider.dart';
 
 class TaskScreen extends StatelessWidget {
+  static const String id = "welcome_screen";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlueAccent,
+      backgroundColor: Theme.of(context).primaryColor,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
@@ -16,9 +19,13 @@ class TaskScreen extends StatelessWidget {
             builder: (BuildContext context) => AddTaskScreen(),
           );
         },
-        backgroundColor: Colors.lightBlueAccent,
-        child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).accentColor,
+        ),
       ),
+      drawer: DrawerNavigationScreen(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -28,14 +35,23 @@ class TaskScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  child: Icon(
-                    Icons.list,
-                    size: 35.0,
-                    color: Colors.lightBlueAccent,
-                  ),
-                  backgroundColor: Colors.white,
-                  radius: 30.0,
+                Builder(
+                  builder: (BuildContext context) {
+                    return GestureDetector(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: CircleAvatar(
+                        child: Icon(
+                          Icons.list,
+                          size: 35.0,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        backgroundColor: Theme.of(context).accentColor,
+                        radius: 30.0,
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(
                   height: 10.0,
@@ -43,7 +59,7 @@ class TaskScreen extends StatelessWidget {
                 Text(
                   'Todoey',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).accentColor,
                     fontWeight: FontWeight.w700,
                     fontSize: 50.0,
                   ),
@@ -52,7 +68,7 @@ class TaskScreen extends StatelessWidget {
                   '${Provider.of<TaskData>(context).taskCount} ${Provider.of<TaskData>(context).taskCount < 2 ? 'Task' : 'Tasks'}',
                   style: TextStyle(
                     fontSize: 18.0,
-                    color: Colors.white,
+                    color: Theme.of(context).accentColor,
                   ),
                 ),
               ],
@@ -62,7 +78,7 @@ class TaskScreen extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).accentColor,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(20.0),
                   topLeft: Radius.circular(20.0),
