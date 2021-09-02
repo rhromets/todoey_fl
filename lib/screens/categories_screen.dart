@@ -19,6 +19,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   var _editCategoryDescription = TextEditingController();
 
+  var category;
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +28,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   getAllCategories() async {
+    _categoryList = [];
     var categories = await _categoryService.getCategories();
     categories.forEach((category) {
       setState(() {
@@ -41,6 +44,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   Category _category = Category();
   CategoryService _categoryService = CategoryService();
+
+  showSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Successful'),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'Category Updated',
+          onPressed: () {},
+        ),
+      ),
+    );
+  }
 
   _showFormInDialog(BuildContext context) {
     return showDialog(
@@ -67,7 +83,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 child: Text('Save'),
               ),
             ],
-            title: Text('Category form'),
+            title: Text('Category Create Form'),
             content: SingleChildScrollView(
               child: Column(
                 children: [
@@ -107,15 +123,22 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
               TextButton(
                 onPressed: () async {
-                  _category.name = _categoryName.text;
-                  _category.description = _categoryDescription.text;
-                  var result = await _categoryService.saveCategory(_category);
-                  print(result);
+                  _category.id = category[0]['id'];
+                  _category.name = _editCategoryName.text;
+                  _category.description = _editCategoryDescription.text;
+                  var result = await _categoryService.updateCategory(_category);
+
+                  showSnackBar();
+
+                  if (result > 0) {
+                    Navigator.pop(context);
+                    getAllCategories();
+                  }
                 },
-                child: Text('Save'),
+                child: Text('Update'),
               ),
             ],
-            title: Text('Category edit form'),
+            title: Text('Category Edit Form'),
             content: SingleChildScrollView(
               child: Column(
                 children: [
@@ -141,7 +164,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 
   _editCategory(BuildContext context, categoryId) async {
-    var category = await _categoryService.getCategoryById(categoryId);
+    category = await _categoryService.getCategoryById(categoryId);
     setState(() {
       _editCategoryName.text = category[0]['name'] ?? 'No name';
       _editCategoryDescription.text =

@@ -25,11 +25,17 @@ class Repository {
 
   getAll(table) async {
     var conn = await database;
-    return conn.query(table);
+    return await conn.query(table);
   }
 
   getById(String table, itemId) async {
     var conn = await database;
     return await conn.query(table, where: 'id=?', whereArgs: [itemId]);
+  }
+
+  update(String table, data) async {
+    var conn = await database;
+    return await conn
+        .update(table, data, where: 'id=?', whereArgs: [data['id']]);
   }
 }
