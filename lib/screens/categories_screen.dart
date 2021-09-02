@@ -45,13 +45,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Category _category = Category();
   CategoryService _categoryService = CategoryService();
 
-  showSnackBar() {
+  showSnackBar(String label) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Successful'),
         duration: Duration(seconds: 3),
         action: SnackBarAction(
-          label: 'Category Updated',
+          label: label,
           onPressed: () {},
         ),
       ),
@@ -76,8 +76,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   _category.name = _categoryName.text;
                   _category.description = _categoryDescription.text;
                   var result = await _categoryService.saveCategory(_category);
+                  showSnackBar('Category Created');
                   if (result > 0) {
                     Navigator.pop(context);
+                    getAllCategories();
                   }
                 },
                 child: Text('Save'),
@@ -127,9 +129,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   _category.name = _editCategoryName.text;
                   _category.description = _editCategoryDescription.text;
                   var result = await _categoryService.updateCategory(_category);
-
-                  showSnackBar();
-
+                  showSnackBar('Category Updated');
                   if (result > 0) {
                     Navigator.pop(context);
                     getAllCategories();
@@ -159,6 +159,52 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 ],
               ),
             ),
+          );
+        });
+  }
+
+  _removeCategoryDialog(BuildContext context, categoryId, categoryIndex) {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context).primaryColor),
+                ),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: Theme.of(context).accentColor),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  var result =
+                      await _categoryService.removeCategory(categoryId);
+                  showSnackBar('Category Removed');
+                  if (result > 0) {
+                    Navigator.pop(context);
+                    getAllCategories();
+                  }
+                },
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.redAccent),
+                ),
+                child: Text(
+                  'Remove',
+                  style: TextStyle(color: Theme.of(context).accentColor),
+                ),
+              ),
+            ],
+            title:
+                Text('Remove Category ${_categoryList[categoryIndex].name}?'),
           );
         });
   }
@@ -220,7 +266,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     _categoryList[index].name.toString(),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _removeCategoryDialog(
+                          context, _categoryList[index].id, index);
+                    },
                     icon: Icon(Icons.delete),
                   ),
                 ],
